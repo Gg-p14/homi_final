@@ -1,0 +1,47 @@
+@model ReputacionViewModel
+@{
+    ViewData["Title"] = "Reputación";
+}
+@await Html.PartialAsync("_NavegacionAnfitrion")
+<h1>Reputación</h1>
+
+@if (Model.Total == 0)
+{
+    <p class="ayuda">Todavía no tienes reseñas. Aparecerán cuando tus huéspedes terminen su estancia.</p>
+}
+else
+{
+    <div class="tarjeta reputacion">
+        <strong class="promedio-grande">@Model.Promedio?.ToString("0.0")</strong>
+        @await Html.PartialAsync("_Estrellas", Model.Promedio ?? 0)
+        <p class="ayuda">@Model.Total reseña(s) en total</p>
+    </div>
+
+    <h2>Por alojamiento</h2>
+    <table class="tabla">
+        <thead><tr><th>Alojamiento</th><th>Promedio</th><th>Reseñas</th></tr></thead>
+        <tbody>
+        @foreach (var p in Model.PorPropiedad)
+        {
+            <tr>
+                <td>@p.Titulo</td>
+                <td>@await Html.PartialAsync("_Estrellas", p.Promedio)</td>
+                <td>@p.Total</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h2>Reseñas recientes</h2>
+    @foreach (var r in Model.Resenas)
+    {
+        <div class="tarjeta">
+            <strong>@r.Nombre</strong> · @r.Titulo · @r.FechaCreacion.ToString("dd/MM/yyyy")
+            <div>@await Html.PartialAsync("_Estrellas", (decimal)r.Calificacion)</div>
+            @if (!string.IsNullOrWhiteSpace(r.Comentario))
+            {
+                <p>@r.Comentario</p>
+            }
+        </div>
+    }
+}

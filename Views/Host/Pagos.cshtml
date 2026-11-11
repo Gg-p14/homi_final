@@ -1,0 +1,42 @@
+@model PagosViewModel
+@{
+    ViewData["Title"] = "Mis pagos";
+}
+
+<h1>Pagos</h1>
+<p class="ayuda">El monto cobrado incluye hospedaje, limpieza y la comisión de Homi. "Te corresponde" es lo que recibes tú.</p>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alerta error">@error</div>
+}
+
+<table class="tabla">
+    <thead>
+        <tr><th>Alojamiento</th><th>Cobrado</th><th>Comisión Homi</th><th>Te corresponde</th><th>Estado</th><th>Fecha</th><th></th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var p in Model.Pagos)
+    {
+        <tr>
+            <td>@p.Titulo</td>
+            <td>$@p.MontoCobrado.ToString("N2")</td>
+            <td>$@p.Comision.ToString("N2")</td>
+            <td>$@p.MontoAnfitrion.ToString("N2")</td>
+            <td>@p.Estado</td>
+            <td>@(p.FechaRetencion?.ToString("dd/MM/yyyy") ?? "-")</td>
+            <td><a asp-action="Desglose" asp-route-id="@p.ReservaId">Ver desglose</a></td>
+            <td>
+                @if (p.PuedeLiberar)
+                {
+                    <form asp-action="LiberarPago" asp-route-id="@p.ReservaId" method="post" data-confirmar="¿Liberar este pago? Tu parte quedará disponible para ti.">
+                        <button type="submit" class="enlace-boton">Liberar pago</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<p><a asp-action="Index">← Volver al panel</a></p>

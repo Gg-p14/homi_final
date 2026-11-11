@@ -1,0 +1,18 @@
+@model DesgloseViewModel
+@{
+    ViewData["Title"] = "Desglose de la reserva";
+    var tuParte = Model.Cargos.Where(c => c.Concepto != "Comision").Sum(c => c.Monto);
+}
+
+<h1>Desglose de la reserva #@Model.ReservaId</h1>
+
+<table class="desglose">
+    @foreach (var c in Model.Cargos)
+    {
+        <tr><td>@c.Concepto</td><td>$@c.Monto.ToString("N2")</td></tr>
+    }
+    <tr class="total"><td>Te corresponde</td><td>$@tuParte.ToString("N2")</td></tr>
+</table>
+<p class="ayuda">La comisión de Homi es la diferencia entre lo cobrado al huésped y lo que te corresponde.</p>
+
+<p><a asp-action="Pagos">← Volver a pagos</a></p>

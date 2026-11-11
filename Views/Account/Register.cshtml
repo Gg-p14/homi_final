@@ -1,0 +1,37 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+}
+<section class="tarjeta formulario">
+    <h1>Crear cuenta</h1>
+    <form asp-action="Register" method="post">
+        <div asp-validation-summary="ModelOnly" class="errores"></div>
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" />
+        <span asp-validation-for="Nombre" class="errores"></span>
+        <label asp-for="Apellido"></label>
+        <input asp-for="Apellido" />
+        <span asp-validation-for="Apellido" class="errores"></span>
+        <label asp-for="Correo"></label>
+        <input asp-for="Correo" type="email" />
+        <span asp-validation-for="Correo" class="errores"></span>
+        <label asp-for="Telefono"></label>
+        <input asp-for="Telefono" type="tel" inputmode="numeric" maxlength="10" pattern="\d{10}" data-solo-digitos />
+        <span asp-validation-for="Telefono" class="errores"></span>
+        <label asp-for="Password">Contraseña</label>
+        <input asp-for="Password" type="password" data-fortaleza />
+        <ul class="requisitos" id="requisitos-password">
+            <li data-regla="longitud">Mínimo 8 caracteres</li>
+            <li data-regla="mayuscula">Mínimo una mayúscula</li>
+            <li data-regla="numero">Mínimo un número</li>
+            <li data-regla="especial">Mínimo un carácter especial (por ejemplo ! @@ # $ %)</li>
+        </ul>
+        <div class="fortaleza"><span id="fortaleza-barra"></span></div>
+        <small id="fortaleza-texto" class="ayuda" aria-live="polite"></small>
+        <span asp-validation-for="Password" class="errores"></span>
+        <label asp-for="ConfirmarPassword">Confirmar contraseña</label>
+        <input asp-for="ConfirmarPassword" type="password" />
+        <span asp-validation-for="ConfirmarPassword" class="errores"></span>
+        <button type="submit" class="boton">Registrarme</button>
+    </form>
+</section>

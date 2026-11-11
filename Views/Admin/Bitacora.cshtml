@@ -1,0 +1,38 @@
+@model BitacoraViewModel
+@{
+    ViewData["Title"] = "Bitácora";
+}
+<h1>Bitácora</h1>
+<p class="ayuda">Registro de acciones importantes del sistema. Las acciones automáticas (por ejemplo, la expiración de reservas) no tienen usuario.</p>
+
+<form method="get" asp-action="Bitacora" class="filtros">
+    <label>Desde</label>
+    <input type="date" name="desde" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+    <label>Hasta</label>
+    <input type="date" name="hasta" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+    <input type="number" name="usuarioId" min="1" placeholder="Id de usuario" value="@Model.UsuarioId" />
+    <input type="text" name="accion" placeholder="Acción (ej. CrearReserva)" value="@Model.Accion" />
+    <button type="submit" class="boton">Filtrar</button>
+</form>
+
+<table class="tabla">
+    <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>Id</th><th>Detalle</th></tr></thead>
+    <tbody>
+    @foreach (var r in Model.Registros)
+    {
+        <tr>
+            <td>@r.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@(r.UsuarioId?.ToString() ?? "Sistema")</td>
+            <td>@r.Accion</td>
+            <td>@r.Entidad</td>
+            <td>@r.EntidadId</td>
+            <td>@r.Detalle</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (!Model.Registros.Any())
+{
+    <p>No hay registros con esos filtros.</p>
+}

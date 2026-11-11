@@ -1,0 +1,31 @@
+@model Homi.ViewModels.VerificarViewModel
+@{
+    ViewData["Title"] = "Confirma tu correo";
+}
+
+<div class="tarjeta formulario-centrado">
+    <h1>Confirma tu correo</h1>
+    <p class="ayuda">Te enviamos un código de 6 dígitos. Vence en 15 minutos.</p>
+
+    @if (TempData["Exito"] is string exito)
+    {
+        <div class="alerta exito">@exito</div>
+    }
+
+    <div asp-validation-summary="ModelOnly" class="errores"></div>
+
+    <form asp-action="Verificar" method="post">
+        <input type="hidden" asp-for="Correo" />
+        <label asp-for="Codigo"></label>
+        <input asp-for="Codigo" inputmode="numeric" maxlength="6" pattern="\d{6}" data-solo-digitos />
+        <span asp-validation-for="Codigo" class="errores"></span>
+        <button type="submit" class="boton">Confirmar</button>
+    </form>
+
+    <form asp-action="ReenviarCodigo" method="post">
+        <input type="hidden" name="correo" value="@Model.Correo" />
+        <button type="submit" class="boton secundario">Reenviar código</button>
+    </form>
+
+    <p><a asp-action="Login">Ir a iniciar sesión</a></p>
+</div>

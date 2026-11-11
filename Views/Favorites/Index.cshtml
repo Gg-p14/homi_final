@@ -1,0 +1,31 @@
+@model List<FavoritoItem>
+@{
+    ViewData["Title"] = "Favoritos";
+}
+<h1>Favoritos</h1>
+
+@if (!Model.Any())
+{
+    <p>Todavía no guardas alojamientos.</p>
+}
+
+<div class="cuadricula">
+    @foreach (var f in Model)
+    {
+        <div class="tarjeta-alojamiento">
+            <a asp-controller="Properties" asp-action="Details" asp-route-id="@f.Id">
+                @if (f.Foto is not null)
+                {
+                    <img class="imagen-alojamiento" src="@f.Foto" alt="@f.Titulo" />
+                }
+                <h3>@f.Titulo</h3>
+                <p>@f.Ciudad</p>
+                <strong>$@f.PrecioPorNoche.ToString("N2") por noche</strong>
+            </a>
+            <form asp-action="Quitar" method="post">
+                <input type="hidden" name="alojamientoId" value="@f.Id" />
+                <button type="submit" class="enlace-boton">Quitar de favoritos</button>
+            </form>
+        </div>
+    }
+</div>

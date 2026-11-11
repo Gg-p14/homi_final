@@ -1,0 +1,29 @@
+@model List<Homi.Models.ComprobanteResumen>
+@{ ViewData["Title"] = "Mis comprobantes"; }
+
+<h1>Mis comprobantes</h1>
+
+@if (!Model.Any())
+{
+    <p class="ayuda">Todavía no tienes comprobantes.</p>
+}
+else
+{
+    <table class="tabla">
+        <thead><tr><th>Folio</th><th>Alojamiento</th><th>Emitido</th><th>Total</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Folio</td>
+                <td>@c.TituloAlojamiento@(c.Anulado ? " (anulado)" : "")</td>
+                <td>@c.FechaEmision.ToString("dd/MM/yyyy")</td>
+                <td>$@c.Total.ToString("N2")</td>
+                <td><a asp-action="Comprobante" asp-route-id="@c.ReservaId">Ver</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<p><a asp-controller="Perfil" asp-action="Index">← Volver a mi perfil</a></p>

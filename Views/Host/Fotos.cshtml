@@ -1,0 +1,65 @@
+@model FotosViewModel
+@{
+    var a = Model.Alojamiento;
+    ViewData["Title"] = "Fotos de " + a.Titulo;
+    var total = Model.Fotos.Count;
+}
+
+<h1>Fotos de @a.Titulo</h1>
+<p>Estado: <strong>@(a.Activo ? "Activo" : "Borrador o pausado")</strong> · Fotos: @total / 10</p>
+<p class="ayuda">JPG, PNG o WEBP, máximo 1 MB cada una. Para activar el alojamiento necesitas al menos una foto.</p>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alerta error">@error</div>
+}
+@if (TempData["Exito"] is string exito)
+{
+    <div class="alerta exito">@exito</div>
+}
+
+<div class="fotos-layout">
+    <section>
+        <h2>Orden de las fotos</h2>
+        @if (!Model.Fotos.Any())
+        {
+            <p class="ayuda">Aún no hay fotos.</p>
+        }
+        <div class="lista-fotos">
+            @for (var i = 0; i < Model.Fotos.Count; i++)
+            {
+                var f = Model.Fotos[i];
+                <div class="foto-fila tarjeta">
+                    <span class="orden">@(i + 1)</span>
+                    <img class="miniatura-grande" src="@f.RutaArchivo" alt="Foto @(i + 1)" />
+                    <div class="acciones-fila">
+                        <form asp-action="MoverFoto" asp-route-id="@a.Id" method="post">
+                            <input type="hidden" name="fotoId" value="@f.Id" />
+                            <input type="hidden" name="direccion" value="-1" />
+                            <button type="submit" class="enlace-boton" @(i == 0 ? "disabled" : "")>Subir</button>
+                        </form>
+                        <form asp-action="MoverFoto" asp-route-id="@a.Id" method="post">
+                            <input type="hidden" name="fotoId" value="@f.Id" />
+                            <input type="hidden" name="direccion" value="1" />
+                            <button type="submit" class="enlace-boton" @(i == Model.Fotos.Count - 1 ? "disabled" : "")>Bajar</button>
+                        </form>
+                        <form asp-action="EliminarFoto" asp-route-id="@a.Id" method="post" data-confirmar="¿Eliminar esta foto?">
+                            <input type="hidden" name="fotoId" value="@f.Id" />
+                            <button type="submit" class="enlace-boton">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <aside class="tarjeta formulario">
+        <h2>Subir fotos</h2>
+        <form asp-action="SubirFotos" asp-route-id="@a.Id" method="post" enctype="multipart/form-data">
+            <input type="file" name="fotos" multiple accept="image/jpeg,image/png,image/webp" />
+            <button type="submit" class="boton">Subir fotos</button>
+        </form>
+    </aside>
+</div>
+
+<p><a asp-action="Index">← Volver al panel</a></p>

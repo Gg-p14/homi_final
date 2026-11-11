@@ -1,0 +1,93 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section class="hero">
+    <p class="eyebrow">TU CASA POR EL TIEMPO QUE TÚ QUIERAS</p>
+    <h1>Tu próxima aventura<br />está por comenzar</h1>
+    <p class="subtitulo">Encuentra alojamientos con todo lo que necesitas, al alcance de tus manos con solo un clic.</p>
+
+    <form class="buscador" method="get" asp-controller="Properties" asp-action="Index">
+        <label class="campo">
+            <span>Destino</span>
+            <select name="ciudadId">
+                <option value="">¿A dónde vas?</option>
+                @foreach (var c in Model.Ciudades)
+                {
+                    <option value="@c.Id">@c.Nombre, @c.Estado</option>
+                }
+            </select>
+        </label>
+        <label class="campo">
+            <span>Entrada</span>
+            <input type="date" name="entrada" />
+        </label>
+        <label class="campo">
+            <span>Salida</span>
+            <input type="date" name="salida" />
+        </label>
+        <label class="campo">
+            <span>Huéspedes</span>
+            <input type="number" name="huespedes" min="1" value="1" />
+        </label>
+        <button type="submit" class="boton-pill">Buscar</button>
+    </form>
+</section>
+
+<section class="caracteristicas">
+    <div class="tarjeta-caracteristica">
+        <h3>Solo casas libres en tus fechas</h3>
+        <p>Al buscar por fechas, solo ves los alojamientos disponibles para esos días.</p>
+    </div>
+    <div class="tarjeta-caracteristica">
+        <h3>Toda la información en un lugar</h3>
+        <p>Precio, servicios, condiciones y reseñas, sin buscar en otras páginas.</p>
+    </div>
+    <div class="tarjeta-caracteristica">
+        <h3>Renta por el tiempo que quieras</h3>
+        <p>Desde una noche hasta temporadas largas, según lo defina cada anfitrión.</p>
+    </div>
+</section>
+
+<div class="centrado-bloque">
+    <a class="boton" asp-controller="Properties" asp-action="Index">Explorar alojamientos</a>
+</div>
+
+<section class="seccion">
+    <div class="encabezado-seccion">
+        <h2>Alojamientos destacados</h2>
+        <a asp-controller="Properties" asp-action="Index">Ver todos →</a>
+    </div>
+
+    <div class="cuadricula">
+        @foreach (var a in Model.Destacados)
+        {
+            <a class="tarjeta-alojamiento" asp-controller="Properties" asp-action="Details" asp-route-id="@a.Id">
+                @if (a.Foto is not null)
+                {
+                    <img class="imagen-alojamiento" src="@a.Foto" alt="@a.Titulo" />
+                }
+                else
+                {
+                    <div class="imagen-alojamiento vacia"></div>
+                }
+                <span class="ciudad">@a.Ciudad</span>
+                <strong class="titulo">@a.Titulo</strong>
+                <span class="precio">$@a.PrecioPorNoche.ToString("N0") <small>por noche</small></span>
+            </a>
+        }
+        @if (!Model.Destacados.Any())
+        {
+            <p class="vacio">Pronto verás aquí los alojamientos publicados.</p>
+        }
+    </div>
+</section>
+
+<section class="bloque-anfitrion">
+    <div>
+        <h2>¿Tienes una casa para rentar?</h2>
+        <p>Publica en Homi y recibe ingresos por cada reserva.</p>
+    </div>
+    <a class="boton-pill" asp-controller="Host" asp-action="Create">Publicar mi casa</a>
+</section>

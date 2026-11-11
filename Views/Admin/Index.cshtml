@@ -1,0 +1,21 @@
+@model ResumenGeneral
+@{
+    ViewData["Title"] = "Administración";
+}
+<h1>Panel del superadministrador</h1>
+@await Html.PartialAsync("_Navegacion")
+
+<div class="resumen">
+    <div class="tarjeta"><span>Usuarios activos</span><strong>@Model.UsuariosActivos</strong></div>
+    <div class="tarjeta"><span>Alojamientos activos</span><strong>@Model.AlojamientosActivos</strong></div>
+    <div class="tarjeta"><span>Reservas del mes</span><strong>@Model.ReservasDelMes</strong></div>
+    <div class="tarjeta"><span>Comisiones de Homi</span><strong>$@Model.Ingresos.ToString("N2")</strong></div>
+    <div class="tarjeta"><span>Total cobrado a huéspedes</span><strong>$@Model.TotalCobrado.ToString("N2")</strong></div>
+</div>
+
+<div class="acciones-fila">
+    <a class="boton" asp-action="Usuarios">Usuarios</a>
+    <a class="boton-borde" asp-action="Comentarios">Comentarios</a>
+    <a class="boton-borde" asp-action="Bitacora">Bitácora</a>
+    <a class="boton-borde" asp-action="Reportes">Reportes</a>
+</div>

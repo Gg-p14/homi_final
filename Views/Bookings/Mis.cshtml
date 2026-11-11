@@ -1,0 +1,69 @@
+@model MisReservasViewModel
+@{
+    ViewData["Title"] = "Mis reservas";
+    var hoy = Homi.Helpers.Reloj.Hoy;
+    var filtros = new[] { "Todas", "Pendientes", "Proximas", "Pasadas", "Canceladas" };
+}
+<h1>Mis reservas</h1>
+
+<div class="chips">
+    @foreach (var f in filtros)
+    {
+        <a class="chip @(f == Model.Filtro ? "activo" : "")" asp-action="Mis" asp-route-filtro="@f">@f</a>
+    }
+</div>
+
+@if (!Model.Reservas.Any())
+{
+    <p>No hay reservas en este filtro.</p>
+}
+
+@foreach (var r in Model.Reservas)
+{
+    var pendiente = r.EstadoReservaId == CatalogoIds.ReservaPendientePago;
+    var confirmada = r.EstadoReservaId == CatalogoIds.ReservaConfirmada;
+    <section class="tarjeta reserva">
+        <h3>@r.Titulo</h3>
+        <p>@r.FechaEntrada.ToString("dd/MM/yyyy") al @r.FechaSalida.ToString("dd/MM/yyyy") · @r.NumeroHuespedes huésped(es)</p>
+        <p>Estado: <strong>@r.Estado</strong></p>
+
+        <div class="acciones-fila">
+            @if (pendiente)
+            {
+                <a class="boton" asp-action="Pagar" asp-route-id="@r.Id">Pagar ahora</a>
+            }
+            @if (confirmada)
+            {
+                <a class="boton-borde" asp-action="Comprobante" asp-route-id="@r.Id">Ver comprobante</a>
+            }
+            @if (r.PuedeCancelar)
+            {
+                <form asp-action="Cancelar" asp-route-id="@r.Id" method="post" data-confirmar="¿Seguro que quieres cancelar esta reserva?">
+                    <button type="submit" class="boton secundario">Cancelar reserva</button>
+                </form>
+            }
+        </div>
+
+        @if (confirmada && r.FechaSalida <= hoy && !r.TieneResena)
+        {
+            <form asp-action="Resenar" method="post" class="formulario-resena">
+                <input type="hidden" name="reservaId" value="@r.Id" />
+                <label>Calificación (1 a 5)</label>
+                <div class="estrellas-input" role="radiogroup" aria-label="Calificación">
+                    @for (var s = 5; s >= 1; s--)
+                    {
+                        <input type="radio" id="estrella-@r.Id-@s" name="calificacion" value="@s" required />
+                        <label for="estrella-@r.Id-@s" title="@s de 5">★</label>
+                    }
+                </div>
+                <label>Comentario</label>
+                <textarea name="comentario" maxlength="1000"></textarea>
+                <button type="submit" class="boton">Enviar reseña</button>
+            </form>
+        }
+        @if (r.TieneResena)
+        {
+            <p class="ayuda">Ya dejaste tu reseña para esta estancia.</p>
+        }
+    </section>
+}

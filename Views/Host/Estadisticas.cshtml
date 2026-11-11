@@ -1,0 +1,34 @@
+@model EstadisticasViewModel
+@{
+    ViewData["Title"] = "Estadísticas";
+    var meses = new[] { "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" };
+}
+@await Html.PartialAsync("_NavegacionAnfitrion")
+<h1>Estadísticas de ingresos</h1>
+
+<form method="get" class="filtro-anio">
+    <label>Año</label>
+    <input type="number" name="anio" value="@Model.Anio" min="2020" max="2100" />
+    <button type="submit" class="boton secundario">Ver</button>
+</form>
+
+<div class="resumen">
+    <div class="tarjeta"><span>Ingresos del año</span><strong>$@Model.TotalAnio.ToString("N2")</strong></div>
+    <div class="tarjeta"><span>Reservas activas</span><strong>@Model.Resumen.ReservasActivas</strong></div>
+    <div class="tarjeta"><span>Alojamientos activos</span><strong>@Model.Resumen.AlojamientosActivos</strong></div>
+</div>
+
+<div class="grafica tarjeta">
+    @for (var m = 1; m <= 12; m++)
+    {
+        var mes = Model.Meses.FirstOrDefault(x => x.Mes == m);
+        var monto = mes?.Ingresos ?? 0;
+        var porcentaje = Model.MaximoMes > 0 ? (int)Math.Round(monto / Model.MaximoMes * 100) : 0;
+        <div class="barra-mes">
+            <span class="valor">$@monto.ToString("N0")</span>
+            <div class="barra" style="height:@(porcentaje)%"></div>
+            <span class="etiqueta">@meses[m - 1]</span>
+        </div>
+    }
+</div>
+<p class="ayuda">Ingresos = hospedaje y limpieza que te corresponden. La comisión de Homi no se incluye.</p>

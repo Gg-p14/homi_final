@@ -1,0 +1,30 @@
+@model AlojamientosAdminViewModel
+@{ ViewData["Title"] = "Alojamientos"; }
+@await Html.PartialAsync("_Navegacion")
+<h1>Alojamientos</h1>
+
+<form method="get" class="filtros">
+    <input type="text" name="buscar" value="@Model.Buscar" placeholder="Título" />
+    <select name="activo">
+        <option value="">Todos</option>
+        <option value="true" selected="@(Model.Activo == true ? "selected" : null)">Activos</option>
+        <option value="false" selected="@(Model.Activo == false ? "selected" : null)">Pausados o borrador</option>
+    </select>
+    <button type="submit" class="boton">Buscar</button>
+</form>
+
+<table class="tabla">
+    <thead><tr><th>Alojamiento</th><th>Anfitrión</th><th>Ciudad</th><th>Precio base</th><th>Estado</th></tr></thead>
+    <tbody>
+    @foreach (var a in Model.Alojamientos)
+    {
+        <tr>
+            <td>@a.Titulo</td>
+            <td>@a.Anfitrion</td>
+            <td>@a.Ciudad</td>
+            <td>$@a.PrecioPorNoche.ToString("N2")</td>
+            <td>@(a.Activo ? "Activo" : "Pausado o borrador")</td>
+        </tr>
+    }
+    </tbody>
+</table>

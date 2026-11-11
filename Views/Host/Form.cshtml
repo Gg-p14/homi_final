@@ -1,0 +1,79 @@
+@model PropertyFormViewModel
+@{
+    var esEdicion = Model.Id > 0;
+    ViewData["Title"] = esEdicion ? "Editar alojamiento" : "Publicar alojamiento";
+}
+<section class="tarjeta formulario">
+    <h1>@ViewData["Title"]</h1>
+    @if (!esEdicion)
+    {
+        <p class="ayuda">Se guardará como borrador. Después subirás fotos y lo activarás.</p>
+    }
+    <form asp-action="@(esEdicion ? "Edit" : "Create")" asp-route-id="@(esEdicion ? Model.Id.ToString() : null)" method="post">
+        <div asp-validation-summary="ModelOnly" class="errores"></div>
+
+        <label asp-for="Titulo"></label>
+        <input asp-for="Titulo" />
+        <span asp-validation-for="Titulo" class="errores"></span>
+
+        <label asp-for="Descripcion"></label>
+        <textarea asp-for="Descripcion" rows="4"></textarea>
+        <span asp-validation-for="Descripcion" class="errores"></span>
+
+        <label asp-for="Calle"></label>
+        <input asp-for="Calle" />
+        <span asp-validation-for="Calle" class="errores"></span>
+
+        <label asp-for="NumeroExterior"></label>
+        <input asp-for="NumeroExterior" />
+        <span asp-validation-for="NumeroExterior" class="errores"></span>
+
+        <label asp-for="Colonia"></label>
+        <input asp-for="Colonia" />
+        <span asp-validation-for="Colonia" class="errores"></span>
+
+        <label asp-for="CodigoPostal"></label>
+        <input asp-for="CodigoPostal" />
+        <span asp-validation-for="CodigoPostal" class="errores"></span>
+
+        <label asp-for="Referencias"></label>
+        <input asp-for="Referencias" />
+        <span asp-validation-for="Referencias" class="errores"></span>
+
+        @if (!esEdicion)
+        {
+            <label asp-for="Pais"></label>
+            <input asp-for="Pais" list="lista-paises" autocomplete="off" />
+            <label asp-for="Estado"></label>
+            <input asp-for="Estado" list="lista-estados" autocomplete="off" />
+            <label asp-for="Ciudad"></label>
+            <input asp-for="Ciudad" list="lista-ciudades" autocomplete="off" />
+            <datalist id="lista-paises">@foreach (var p in (ViewBag.Paises as IEnumerable<Homi.Models.CatalogoItem>) ?? Enumerable.Empty<Homi.Models.CatalogoItem>()) { <option value="@p.Nombre"></option> }</datalist>
+            <datalist id="lista-estados">@foreach (var e in (ViewBag.Estados as IEnumerable<Homi.Models.CatalogoItem>) ?? Enumerable.Empty<Homi.Models.CatalogoItem>()) { <option value="@e.Nombre"></option> }</datalist>
+            <datalist id="lista-ciudades">@foreach (var c in (ViewBag.Ciudades as IEnumerable<Homi.Models.CiudadItem>) ?? Enumerable.Empty<Homi.Models.CiudadItem>()) { <option value="@c.Nombre"></option> }</datalist>
+            <span asp-validation-for="Ciudad" class="errores"></span>
+        }
+        else
+        {
+            <p>Ubicación: @Model.Ciudad, @Model.Estado, @Model.Pais</p>
+            <input type="hidden" asp-for="Pais" />
+            <input type="hidden" asp-for="Estado" />
+            <input type="hidden" asp-for="Ciudad" />
+        }
+
+        <label asp-for="PrecioPorNoche"></label>
+        <input asp-for="PrecioPorNoche" type="number" min="1" step="0.01" inputmode="decimal" />
+        <span asp-validation-for="PrecioPorNoche" class="errores"></span>
+
+        <label class="casilla">
+            <input asp-for="CobraLimpieza" type="checkbox" />
+            Cobrar tarifa de limpieza ($35 por estancia)
+        </label>
+
+        <label asp-for="CapacidadMaxima"></label>
+        <input asp-for="CapacidadMaxima" />
+        <span asp-validation-for="CapacidadMaxima" class="errores"></span>
+
+        <button type="submit" class="boton">Guardar</button>
+    </form>
+</section>

@@ -1,0 +1,48 @@
+@model ComentariosViewModel
+@{
+    ViewData["Title"] = "Comentarios";
+}
+<section class="tarjeta formulario">
+    <h1>Comentarios y problemas</h1>
+    <p class="ayuda">Cuéntanos tu comentario o si tuviste un problema. Lo revisaremos.</p>
+    <form asp-action="Enviar" method="post">
+        <div asp-validation-summary="ModelOnly" class="errores"></div>
+
+        <label asp-for="Tipo"></label>
+        <select asp-for="Tipo">
+            <option value="Comentario">Comentario</option>
+            <option value="Problema">Problema</option>
+        </select>
+        <span asp-validation-for="Tipo" class="errores"></span>
+
+        <label asp-for="Asunto"></label>
+        <input asp-for="Asunto" />
+        <span asp-validation-for="Asunto" class="errores"></span>
+
+        <label asp-for="Mensaje"></label>
+        <textarea asp-for="Mensaje" rows="5"></textarea>
+        <span asp-validation-for="Mensaje" class="errores"></span>
+
+        <button type="submit" class="boton">Enviar</button>
+    </form>
+</section>
+
+<h2>Mis envíos</h2>
+@if (!Model.Historial.Any())
+{
+    <p>Aún no has enviado comentarios.</p>
+}
+<table class="tabla">
+    <thead><tr><th>Fecha</th><th>Tipo</th><th>Asunto</th><th>Estado</th></tr></thead>
+    <tbody>
+    @foreach (var c in Model.Historial)
+    {
+        <tr>
+            <td>@c.FechaCreacion.ToString("dd/MM/yyyy")</td>
+            <td>@c.Tipo</td>
+            <td>@c.Asunto</td>
+            <td>@c.Estado</td>
+        </tr>
+    }
+    </tbody>
+</table>

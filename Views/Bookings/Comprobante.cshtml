@@ -1,0 +1,57 @@
+@model ComprobanteItem
+@{
+    ViewData["Title"] = "Comprobante " + Model.Folio;
+}
+<div class="ticket">
+    <header class="ticket-encabezado">
+        <img src="~/images/logo.png" alt="Homi" class="ticket-logo" />
+        <div>
+            <h1>Comprobante de reserva</h1>
+            <span class="ticket-folio">Folio @Model.Folio</span>
+        </div>
+    </header>
+
+    <div class="ticket-cuerpo">
+        <div class="ticket-fila"><span>Huésped</span><strong>@Model.NombreHuesped</strong></div>
+        <div class="ticket-fila"><span>Correo</span><strong>@Model.CorreoHuesped</strong></div>
+        <div class="ticket-fila"><span>Alojamiento</span><strong>@Model.TituloAlojamiento</strong></div>
+        <div class="ticket-fila"><span>Dirección</span><strong>@Model.Direccion</strong></div>
+        <div class="ticket-fila"><span>Entrada</span><strong>@Model.FechaEntrada.ToString("dd/MM/yyyy")</strong></div>
+        <div class="ticket-fila"><span>Salida</span><strong>@Model.FechaSalida.ToString("dd/MM/yyyy")</strong></div>
+        <div class="ticket-fila"><span>Huéspedes</span><strong>@Model.NumeroHuespedes</strong></div>
+        <div class="ticket-fila"><span>Emitido</span><strong>@Model.FechaEmision.ToString("dd/MM/yyyy HH:mm")</strong></div>
+    </div>
+
+    <div class="ticket-corte"></div>
+
+    <div class="ticket-desglose">
+        <div><span>Hospedaje</span><span>$@Model.Hospedaje.ToString("N2")</span></div>
+        <div><span>Limpieza</span><span>$@Model.Limpieza.ToString("N2")</span></div>
+        <div class="ticket-total"><span>Total pagado</span><span>$@Model.Total.ToString("N2")</span></div>
+    </div>
+
+    @if (Model.Anulado)
+    {
+        <div class="ticket-anulado">ANULADO · la reserva se canceló</div>
+    }
+
+    @if (ViewBag.Pago is Homi.Models.PagoReservaItem pago)
+    {
+        <div class="ticket-fila" style="padding: 12px 24px;"><span>Estado del pago</span><strong>@pago.Estado</strong></div>
+    }
+    @if (ViewBag.Resena is Homi.Models.ResenaReserva resena)
+    {
+        <div class="ticket-fila" style="padding: 12px 24px;"><span>Tu reseña</span><strong>@resena.Calificacion / 5</strong></div>
+        @if (!string.IsNullOrWhiteSpace(resena.Comentario))
+        {
+            <p style="padding: 0 24px 12px; margin: 0; font-size: .9rem; color: #555;">@resena.Comentario</p>
+        }
+    }
+
+    <footer class="ticket-pie">Homi · Gracias por reservar con nosotros</footer>
+</div>
+
+<div class="acciones-ticket no-imprimir">
+    <button type="button" class="boton" data-imprimir>Imprimir comprobante</button>
+    <a asp-action="Mis">← Volver a mis reservas</a>
+</div>

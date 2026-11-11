@@ -1,0 +1,37 @@
+@model HuespedesViewModel
+@{
+    ViewData["Title"] = "Huéspedes";
+}
+@await Html.PartialAsync("_NavegacionAnfitrion")
+<h1>Historial de huéspedes</h1>
+
+
+@if (!Model.Huespedes.Any())
+{
+    <p class="ayuda">Aún no tienes huéspedes.</p>
+}
+
+@foreach (var h in Model.Huespedes)
+{
+    <details class="tarjeta">
+        <summary>
+            <strong>@h.Nombre</strong>
+            · @h.Confirmadas estancia(s) confirmada(s), @h.Canceladas cancelada(s)
+            · Última: @h.UltimaEstancia.ToString("dd/MM/yyyy")
+        </summary>
+        <table class="tabla">
+            <thead><tr><th>Alojamiento</th><th>Fechas</th><th>Huéspedes</th><th>Estado</th></tr></thead>
+            <tbody>
+            @foreach (var r in h.Reservas)
+            {
+                <tr>
+                    <td>@r.Titulo</td>
+                    <td>@r.FechaEntrada.ToString("dd/MM/yyyy") – @r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                    <td>@r.NumeroHuespedes</td>
+                    <td>@r.Estado</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </details>
+}

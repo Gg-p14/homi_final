@@ -1,0 +1,41 @@
+@model ReservasAdminViewModel
+@{ ViewData["Title"] = "Reservas"; }
+@await Html.PartialAsync("_Navegacion")
+<h1>Reservas</h1>
+@if (TempData["Exito"] is string exito) { <div class="alerta exito">@exito</div> }
+@if (TempData["Error"] is string error) { <div class="alerta error">@error</div> }
+
+<form method="get" class="filtros">
+    <label>Desde</label><input type="date" name="desde" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+    <label>Hasta</label><input type="date" name="hasta" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+    <select name="estado">
+        <option value="">Todos los estados</option>
+        <option value="1" selected="@(Model.Estado == 1 ? "selected" : null)">Pendiente de pago</option>
+        <option value="2" selected="@(Model.Estado == 2 ? "selected" : null)">Confirmada</option>
+        <option value="3" selected="@(Model.Estado == 3 ? "selected" : null)">Cancelada</option>
+        <option value="4" selected="@(Model.Estado == 4 ? "selected" : null)">Expirada</option>
+    </select>
+    <button type="submit" class="boton">Filtrar</button>
+</form>
+
+<table class="tabla">
+    <thead><tr><th>Reserva</th><th>Alojamiento</th><th>Huésped</th><th>Fechas</th><th>Estado</th><th>Cancelar</th></tr></thead>
+    <tbody>
+    @foreach (var r in Model.Reservas)
+    {
+        <tr>
+            <td>#@r.Id</td>
+            <td>@r.Titulo</td>
+            <td>@r.Huesped</td>
+            <td>@r.FechaEntrada.ToString("dd/MM/yyyy") – @r.FechaSalida.ToString("dd/MM/yyyy")</td>
+            <td>@r.Estado</td>
+            <td>
+                <form asp-action="CancelarReserva" asp-route-id="@r.Id" method="post" data-confirmar="¿Cancelar esta reserva? Se devolverá el pago completo.">
+                    <input type="text" name="motivo" maxlength="250" placeholder="Motivo (opcional)" />
+                    <button type="submit" class="enlace-boton">Cancelar</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

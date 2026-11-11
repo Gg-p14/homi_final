@@ -1,0 +1,28 @@
+@model EditarUsuarioViewModel
+@{ ViewData["Title"] = "Editar usuario"; }
+@await Html.PartialAsync("_Navegacion")
+<h1>Editar usuario</h1>
+
+<div class="tarjeta formulario-centrado">
+    <div asp-validation-summary="ModelOnly" class="errores"></div>
+    <form asp-action="EditarUsuario" method="post">
+        <input type="hidden" asp-for="Id" />
+        <label>Correo (no se cambia)</label>
+        <input value="@Model.Email" disabled />
+
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" />
+        <span asp-validation-for="Nombre" class="errores"></span>
+
+        <label asp-for="Apellido"></label>
+        <input asp-for="Apellido" />
+        <span asp-validation-for="Apellido" class="errores"></span>
+
+        <label asp-for="Telefono"></label>
+        <input asp-for="Telefono" inputmode="numeric" maxlength="10" pattern="\d{10}" data-solo-digitos />
+        <span asp-validation-for="Telefono" class="errores"></span>
+
+        <button type="submit" class="boton">Guardar</button>
+    </form>
+    <p><a asp-action="Usuarios">← Volver a usuarios</a></p>
+</div>

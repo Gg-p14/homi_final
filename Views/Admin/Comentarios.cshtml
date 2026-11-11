@@ -1,0 +1,49 @@
+@model ComentariosAdminViewModel
+@{
+    ViewData["Title"] = "Comentarios";
+    var estados = new[] { "Nuevo", "EnRevision", "Resuelto" };
+}
+<h1>Comentarios y problemas</h1>
+
+<form method="get" asp-action="Comentarios" class="filtros">
+    <select name="tipo">
+        <option value="">Todos los tipos</option>
+        <option value="Comentario" selected="@(Model.Tipo == "Comentario" ? "selected" : null)">Comentario</option>
+        <option value="Problema" selected="@(Model.Tipo == "Problema" ? "selected" : null)">Problema</option>
+    </select>
+    <select name="estado">
+        <option value="">Todos los estados</option>
+        @foreach (var e in estados)
+        {
+            <option value="@e" selected="@(Model.Estado == e ? "selected" : null)">@e</option>
+        }
+    </select>
+    <button type="submit" class="boton">Filtrar</button>
+</form>
+
+<table class="tabla">
+    <thead><tr><th>Fecha</th><th>Usuario</th><th>Tipo</th><th>Asunto</th><th>Mensaje</th><th>Estado</th></tr></thead>
+    <tbody>
+    @foreach (var c in Model.Comentarios)
+    {
+        <tr>
+            <td>@c.FechaCreacion.ToString("dd/MM/yyyy")</td>
+            <td>@c.Nombre @c.Apellido<br /><small>@c.Email</small></td>
+            <td>@c.Tipo</td>
+            <td>@c.Asunto</td>
+            <td>@c.Mensaje</td>
+            <td>
+                <form asp-action="CambiarEstadoComentario" asp-route-id="@c.Id" method="post" class="acciones-fila">
+                    <select name="estado">
+                        @foreach (var e in estados)
+                        {
+                            <option value="@e" selected="@(c.Estado == e ? "selected" : null)">@e</option>
+                        }
+                    </select>
+                    <button type="submit" class="enlace-boton">Guardar</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,18 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+<section class="tarjeta formulario">
+    <h1>Iniciar sesión</h1>
+    <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+        <div asp-validation-summary="ModelOnly" class="errores"></div>
+        <label asp-for="Correo"></label>
+        <input asp-for="Correo" type="email" />
+        <span asp-validation-for="Correo" class="errores"></span>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password" class="errores"></span>
+        <button type="submit" class="boton">Entrar</button>
+    </form>
+    <p>¿No tienes cuenta? <a asp-action="Register">Regístrate</a></p>
+</section>

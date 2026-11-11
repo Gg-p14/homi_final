@@ -1,0 +1,37 @@
+@model CatalogosAdminViewModel
+@{ ViewData["Title"] = "Catálogos"; }
+@await Html.PartialAsync("_Navegacion")
+<h1>Catálogos</h1>
+<p class="ayuda">Cambia el nombre que se muestra en las pantallas. Los identificadores no cambian.</p>
+@if (TempData["Exito"] is string exito) { <div class="alerta exito">@exito</div> }
+@if (TempData["Error"] is string error) { <div class="alerta error">@error</div> }
+
+<form method="get" class="filtros">
+    <select name="catalogo">
+        <option value="EstadosReserva" selected="@(Model.Catalogo == "EstadosReserva" ? "selected" : null)">Estados de reserva</option>
+        <option value="EstadosPago" selected="@(Model.Catalogo == "EstadosPago" ? "selected" : null)">Estados de pago</option>
+        <option value="TiposCargo" selected="@(Model.Catalogo == "TiposCargo" ? "selected" : null)">Tipos de cargo</option>
+    </select>
+    <button type="submit" class="boton">Ver</button>
+</form>
+
+<table class="tabla">
+    <thead><tr><th>Id</th><th>Nombre</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>
+                <form asp-action="ActualizarCatalogo" method="post" class="en-linea">
+                    <input type="hidden" name="catalogo" value="@Model.Catalogo" />
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <input type="text" name="nombre" value="@item.Nombre" maxlength="30" required />
+                    <button type="submit" class="boton secundario">Guardar</button>
+                </form>
+            </td>
+            <td></td>
+        </tr>
+    }
+    </tbody>
+</table>

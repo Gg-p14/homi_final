@@ -1,0 +1,71 @@
+@model HostPanelViewModel
+<p class="saludo">Hola, @User.FindFirst("Nombre")?.Value</p>
+@{
+    ViewData["Title"] = "Panel del anfitrión";
+}
+<h1>Panel del anfitrión</h1>
+@await Html.PartialAsync("_NavegacionAnfitrion")
+
+<div class="resumen">
+    <div class="tarjeta"><span>Alojamientos activos</span><strong>@Model.Resumen.AlojamientosActivos</strong></div>
+    <div class="tarjeta"><span>Reservas activas</span><strong>@Model.Resumen.ReservasActivas</strong></div>
+    <div class="tarjeta"><span>Ingresos</span><strong>$@Model.Resumen.Ingresos.ToString("N2")</strong></div>
+</div>
+
+<div class="encabezado-seccion">
+    <h2>Mis alojamientos</h2>
+    <a class="boton" asp-action="Create">Publicar alojamiento</a>
+    <a class="boton secundario" asp-action="Pagos">Pagos</a>
+</div>
+
+<table class="tabla">
+    <thead><tr><th>Título</th><th>Ciudad</th><th>Precio</th><th>Fotos</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var a in Model.Alojamientos)
+    {
+        <tr>
+            <td>@a.Titulo</td>
+            <td>@a.Ciudad</td>
+            <td>$@a.PrecioPorNoche.ToString("N2")</td>
+            <td>@a.TotalFotos / 10</td>
+            <td>@(a.Activo ? "Activo" : "Borrador o pausado")</td>
+            <td class="acciones">
+                <a asp-action="Edit" asp-route-id="@a.Id">Editar</a>
+                <a asp-action="Fotos" asp-route-id="@a.Id">Fotos</a>
+                <form asp-action="Eliminar" asp-route-id="@a.Id" method="post" data-confirmar="¿Eliminar este alojamiento? Si tiene reservas activas se cancelarán con reembolso total.">
+                    <button type="submit" class="enlace-boton">Eliminar</button>
+                </form>
+                <form asp-action="CambiarEstado" asp-route-id="@a.Id" method="post">
+                    <input type="hidden" name="activo" value="@(!a.Activo ? "true" : "false")" />
+                    <button type="submit" class="enlace-boton">@(a.Activo ? "Pausar" : "Activar")</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h2>Reservas de mis alojamientos</h2>
+<table class="tabla">
+    <thead><tr><th>Alojamiento</th><th>Huésped</th><th>Fechas</th><th>Huéspedes</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var r in Model.Reservas)
+    {
+        <tr>
+            <td>@r.Titulo</td>
+            <td>@r.Huesped</td>
+            <td>@r.FechaEntrada.ToString("dd/MM/yyyy") – @r.FechaSalida.ToString("dd/MM/yyyy")</td>
+            <td>@r.NumeroHuespedes</td>
+            <td>@r.Estado</td>
+            <td>
+                @if (r.PuedeCancelar)
+                {
+                    <form asp-action="CancelarReserva" asp-route-id="@r.Id" method="post" data-confirmar="¿Cancelar esta reserva? Se devolverá el pago completo al huésped.">
+                        <button type="submit" class="enlace-boton">Cancelar</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
